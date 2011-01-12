@@ -2,9 +2,12 @@ Summary: TOMOYO Linux tools
 %define  date 20100820
 %define  ver  2.3.0
 
+%define tomoyo_major 1
+%define tomoyo_libname %mklibname tomoyotools %{tomoyo_major}
+
 Name: 	 tomoyo-tools
 Version: %{ver}
-Release: %manbo_mkrel 1
+Release: %manbo_mkrel 2
 License: GPLv2
 URL:	 http://tomoyo.sourceforge.jp/
 Group:	 System/Kernel and hardware
@@ -12,7 +15,6 @@ BuildRequires: help2man
 BuildRequires: ncurses-devel
 BuildRequires: readline-devel
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-#NoSource: 0
 
 Source0: http://osdn.dl.sourceforge.jp/tomoyo/27220/tomoyo-tools-%{ver}-%{date}.tar.gz
 Source1: README.tomoyo-tools.urpmi
@@ -21,17 +23,27 @@ Source3: tomoyo.init
 Patch0:  tomoyo-tools-dont-use-chown.patch
 
 Conflicts: ccs-tools
+Obsoletes: ccs-tools
 
 %description
 TOMOYO Linux is an extension for Linux to provide Mandatory Access Control
 (MAC) functions. This package contains the tools needed to configure, 
 activate and manage the TOMOYO Linux MAC system and policies.
 
+%package -n	 %{tomoyo_libname}
+Summary:	Shared tomoyotools library
+Group:		System/Libraries
+
+%description -n %{tomoyo_libname}
+This package provides the tomoyo shared library
+
 %prep
 %setup -q -n tomoyo-tools
 %patch0 -p1
 
 %build
+# install library to correct path
+sed -i 's:/usr/lib:%{_libdir}:g' usr_sbin/Makefile
 # parallell build is broken / tmb 14.10.2010
 make -s all
 
@@ -60,9 +72,11 @@ rm -rf %{buildroot}
 %attr(700,root,root) %{_initrddir}/tomoyo-auditd
 %attr(700,root,root) /sbin/tomoyo-init
 /usr/lib/tomoyo/
-/usr/lib/libtomoyo*
 %{_sbindir}/tomoyo*
 %{_mandir}/man8/tomoyo*
 %{_mandir}/man8/init_policy.8*
 %{_logdir}/tomoyo/
 %doc README.install.urpmi
+
+%files -n %{tomoyo_libname}
+%{_libdir}/libtomoyotools.so.*
