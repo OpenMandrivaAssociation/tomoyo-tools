@@ -7,7 +7,7 @@ Summary: TOMOYO Linux tools
 
 Name: 	 tomoyo-tools
 Version: %{ver}
-Release: %manbo_mkrel 2
+Release: %mkrel 2
 License: GPLv2
 URL:	 http://tomoyo.sourceforge.jp/
 Group:	 System/Kernel and hardware
