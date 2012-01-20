@@ -19,7 +19,7 @@ Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Source0: http://osdn.dl.sourceforge.jp/tomoyo/27220/tomoyo-tools-%{ver}-%{date}.tar.gz
 Source1: README.tomoyo-tools.urpmi
 Source2: tomoyo.logrotate
-Source3: tomoyo.init
+Source3: tomoyo-auditd.service
 
 Conflicts: ccs-tools
 Obsoletes: ccs-tools
@@ -49,31 +49,29 @@ rm -rf %{buildroot}
 make INSTALLDIR=%{buildroot} USRLIBDIR=%{_libdir} install
 
 install -m 644 %{SOURCE1} README.install.urpmi
-mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d/
-install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/logrotate.d/tomoyo
-mkdir -p %{buildroot}%{_initrddir}
-install -m 700 %{SOURCE3} %{buildroot}%{_initrddir}/tomoyo-auditd
-mkdir -p %{buildroot}%{_logdir}/tomoyo
+install -m 644 -D %{SOURCE2} %{buildroot}%{_sysconfdir}/logrotate.d/tomoyo
+install -m 644 -D %{SOURCE3} %{buildroot}%{_unitdir}/tomoyo-auditd.service
+install -m 700 -d %{buildroot}%{_logdir}/tomoyo
 
 %clean
 rm -rf %{buildroot}
 
 %post
-%_post_service tomoyo-auditd
+%_add_service_helper --no-sysv %{name} $1 tomoyo-auditd.service
 
 %preun
-%_preun_service tomoyo-auditd
+%_del_service_helper --no-sysv %{name} $1 tomoyo-auditd.service
 
 %files
 %defattr(-,root,root)
 %{_sysconfdir}/logrotate.d/tomoyo
-%attr(700,root,root) %{_initrddir}/tomoyo-auditd
 %attr(700,root,root) /sbin/tomoyo-init
 %{_libdir}/tomoyo/
 %{_sbindir}/tomoyo*
 %{_mandir}/man8/tomoyo*
 %{_mandir}/man8/init_policy.8*
 %{_logdir}/tomoyo/
+%{_unitdir}/tomoyo-auditd.service
 %doc README.install.urpmi
 
 %files -n %{tomoyo_libname}
