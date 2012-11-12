@@ -1,0 +1,5 @@
+sources:
+  "README.tomoyo-tools.urpmi:"	a30ecbbc51ff1fe3654a84cdc80eb35fa5a518fd
+  "tomoyo-auditd.service:"	ec9b6f157a851977a3ad2f88f8da582b7a5099b2
+  "tomoyo.logrotate:"	b0e49ad40d3cc8d495b044801d1b39bb484bebdc
+  "tomoyo-tools-2.5.0-20111025.tar.gz:"	00b04ab060753d4bf1d8f70f5117ebe080b4e8e0
