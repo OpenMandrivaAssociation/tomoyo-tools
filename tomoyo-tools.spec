@@ -76,3 +76,34 @@ rm -rf %{buildroot}
 
 %files -n %{tomoyo_libname}
 %{_libdir}/libtomoyotools.so.*
+
+
+%changelog
+* Fri Jan 20 2012 Franck Bui <franck.bui@mandriva.com> 2.5.0-2mdv2012.0
++ Revision: 763231
+- Update tomoyo-tools.urpmi and make clear that the log daemon must be started when installing the package the first time.
+- migrate to systemd only, and don't use ccs-auditd sine we're using tomoyo 2.x
+- fix tomoyo.logrotate to handle log files from 2.x branch
+
+* Thu Jan 12 2012 Franck Bui <franck.bui@mandriva.com> 2.5.0-1
++ Revision: 760485
+- Import Tomoyo Tools 2.5.0
+
+* Wed Jan 12 2011 Eugeni Dodonov <eugeni@mandriva.com> 2.3.0-2
++ Revision: 630971
+- Switch from manbo_mkrel to mkrel
+- Libify libtomoyotools.
+
+* Thu Oct 14 2010 Thomas Backlund <tmb@mandriva.org> 2.3.0-1mnb2
++ Revision: 585706
+- update to 2.3.0
+- update P0
+- add BuildRequires: help2man
+- disable parallel build
+- update filelists
+- update README.urpmi
+
+  + Eugeni Dodonov <eugeni@mandriva.com>
+    - Imported tomoyo-tools with base on our ccs-tools package.
+    - Created package structure for tomoyo-tools.
+

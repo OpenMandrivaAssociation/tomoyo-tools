@@ -1,0 +1,25 @@
+[Unit]
+Description=TOMOYO Linux Auditing Daemon
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/tomoyo-auditd
+
+# Tomoyo auditing daemon does a double fork and it exits the main
+# process immediately after the first fork. At that point systemd's
+# heuristic main PID detector looks at the cgroup and sees only one
+# process - the intermediate child (which is going to fork and exit
+# soon). When the main PID exits, the service is considered dead and
+# the remaining processes are killed. Therefore we use the
+# 'GuessMainPID=no' to avoid systemd to be confused, but in that case
+# systemd doesn't know the main PID so $MAINPID is empty.
+#
+# Once the daemon will support the generation of its pid file then
+# this could be removed.
+
+GuessMainPID=no
+ExecReload=/usr/bin/killall -HUP tomoyo-auditd
+#ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

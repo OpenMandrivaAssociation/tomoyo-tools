@@ -1,0 +1,10 @@
+# Be careful with disk space if "access granted logs" are saved, as
+# this file can grow extremely quickly.
+
+/var/log/tomoyo/*.log {
+    weekly
+    rotate 9
+    missingok
+    notifempty
+    nocreate
+} 

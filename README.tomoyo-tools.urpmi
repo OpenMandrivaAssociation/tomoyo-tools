@@ -1,0 +1,16 @@
+When you install tomoyo-tools it automatically enables TomoyoLinux
+MAC in the kernel.
+
+We suggest that you read the online kickstart manual to get a better
+understanding of the system. It can be found at:
+
+		  http://tomoyo.sourceforge.jp/2.5/
+
+You need to run /usr/lib/tomoyo/init_policy to populate/init tomoyo
+configuration files at /etc/tomoyo. This should be run once (the very
+first time you install this package). You'll have to start the Tomoyo
+auditing daemon service to get the logging started after the complete
+of the initialization.
+
+Running the above script can take several minutes, as it scans the
+complete filesystem in order to set up an initial policy.
