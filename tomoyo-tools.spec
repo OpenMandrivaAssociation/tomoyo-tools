@@ -41,16 +41,15 @@ This package provides the tomoyo shared library
 %build
 # Fix libdir
 sed -i \
+	-e "s:gcc:%{__cc}:" \
 	-e "s:/usr/lib:%{_libdir}:g" \
 	-e "s/\(CFLAGS.*:=\).*/\1 %{optflags}/" \
-	-e "s:CC:%{__cc}:" \
 	Include.make
 
-# install library to correct path
-make USRLIBDIR=%{_libdir} CFLAGS="-Wall $RPM_OPT_FLAGS"
+%make
 
 %install
-make INSTALLDIR=%{buildroot} USRLIBDIR=%{_libdir} install
+make INSTALLDIR=%{buildroot} install
 
 install -m 644 %{SOURCE1} README.install.urpmi
 install -m 644 -D %{SOURCE2} %{buildroot}%{_sysconfdir}/logrotate.d/tomoyo
