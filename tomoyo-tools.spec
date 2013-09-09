@@ -1,60 +1,57 @@
-Summary: TOMOYO Linux tools
-%define  date 20111025
-%define  ver  2.5.0
+%define date 20130406
+%define major 2
+%define libname %mklibname tomoyotools %{major}
 
-%define tomoyo_major 1
-%define tomoyo_libname %mklibname tomoyotools %{tomoyo_major}
+Summary:	TOMOYO Linux tools
+Name:		tomoyo-tools
+Version:	2.4.0
+Release:	3
+Epoch:		2
+License:	GPLv2
+URL:		http://tomoyo.sourceforge.jp/
+Group:		System/Kernel and hardware
+Source0:	http://osdn.dl.sourceforge.jp/tomoyo/27220/tomoyo-tools-%{version}-%{date}.tar.gz
+Source1:	README.tomoyo-tools.urpmi
+Source2:	tomoyo.logrotate
+Source3:	tomoyo-auditd.service
+BuildRequires:	help2man
+BuildRequires:	ncurses-devel
+BuildRequires:	readline-devel
 
-Name: 	 tomoyo-tools
-Version: %{ver}
-Release: %mkrel 2
-License: GPLv2
-URL:	 http://tomoyo.sourceforge.jp/
-Group:	 System/Kernel and hardware
-BuildRequires: help2man
-BuildRequires: ncurses-devel
-BuildRequires: readline-devel
-Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-
-Source0: http://osdn.dl.sourceforge.jp/tomoyo/27220/tomoyo-tools-%{ver}-%{date}.tar.gz
-Source1: README.tomoyo-tools.urpmi
-Source2: tomoyo.logrotate
-Source3: tomoyo-auditd.service
-
-Conflicts: ccs-tools
-Obsoletes: ccs-tools
+%rename	ccs-tools
 
 %description
 TOMOYO Linux is an extension for Linux to provide Mandatory Access Control
 (MAC) functions. This package contains the tools needed to configure,
 activate and manage the TOMOYO Linux MAC system and policies.
 
-%package -n	 %{tomoyo_libname}
+%package -n	 %{libname}
 Summary:	Shared tomoyotools library
 Group:		System/Libraries
 
-%description -n %{tomoyo_libname}
-This package provides the tomoyo shared library
+%description -n %{libname}
+This package provides the tomoyo shared library.
 
 %prep
 %setup -q -n tomoyo-tools
 
 %build
-# install library to correct path
-make USRLIBDIR=%{_libdir} CFLAGS="-Wall $RPM_OPT_FLAGS"
+# Fix libdir
+sed -i \
+	-e "s:gcc:%{__cc}:" \
+	-e "s:/usr/lib:%{_libdir}:g" \
+	-e "s/\(CFLAGS.*:=\).*/\1 %{optflags}/" \
+	Include.make
+
+%make
 
 %install
-rm -rf %{buildroot}
-
-make INSTALLDIR=%{buildroot} USRLIBDIR=%{_libdir} install
+make INSTALLDIR=%{buildroot} install
 
 install -m 644 %{SOURCE1} README.install.urpmi
 install -m 644 -D %{SOURCE2} %{buildroot}%{_sysconfdir}/logrotate.d/tomoyo
 install -m 644 -D %{SOURCE3} %{buildroot}%{_unitdir}/tomoyo-auditd.service
 install -m 700 -d %{buildroot}%{_logdir}/tomoyo
-
-%clean
-rm -rf %{buildroot}
 
 %post
 %_add_service_helper --no-sysv %{name} $1 tomoyo-auditd.service
@@ -63,7 +60,6 @@ rm -rf %{buildroot}
 %_del_service_helper --no-sysv %{name} $1 tomoyo-auditd.service
 
 %files
-%defattr(-,root,root)
 %{_sysconfdir}/logrotate.d/tomoyo
 %attr(700,root,root) /sbin/tomoyo-init
 %{_libdir}/tomoyo/
@@ -74,36 +70,5 @@ rm -rf %{buildroot}
 %{_unitdir}/tomoyo-auditd.service
 %doc README.install.urpmi
 
-%files -n %{tomoyo_libname}
-%{_libdir}/libtomoyotools.so.*
-
-
-%changelog
-* Fri Jan 20 2012 Franck Bui <franck.bui@mandriva.com> 2.5.0-2mdv2012.0
-+ Revision: 763231
-- Update tomoyo-tools.urpmi and make clear that the log daemon must be started when installing the package the first time.
-- migrate to systemd only, and don't use ccs-auditd sine we're using tomoyo 2.x
-- fix tomoyo.logrotate to handle log files from 2.x branch
-
-* Thu Jan 12 2012 Franck Bui <franck.bui@mandriva.com> 2.5.0-1
-+ Revision: 760485
-- Import Tomoyo Tools 2.5.0
-
-* Wed Jan 12 2011 Eugeni Dodonov <eugeni@mandriva.com> 2.3.0-2
-+ Revision: 630971
-- Switch from manbo_mkrel to mkrel
-- Libify libtomoyotools.
-
-* Thu Oct 14 2010 Thomas Backlund <tmb@mandriva.org> 2.3.0-1mnb2
-+ Revision: 585706
-- update to 2.3.0
-- update P0
-- add BuildRequires: help2man
-- disable parallel build
-- update filelists
-- update README.urpmi
-
-  + Eugeni Dodonov <eugeni@mandriva.com>
-    - Imported tomoyo-tools with base on our ccs-tools package.
-    - Created package structure for tomoyo-tools.
-
+%files -n %{libname}
+%{_libdir}/libtomoyotools.so.%{major}*
