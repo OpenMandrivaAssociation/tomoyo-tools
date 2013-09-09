@@ -1,39 +1,36 @@
-Summary: TOMOYO Linux tools
-%define  date 20130406
-%define  ver  2.4.0
+%define date 20130406
+%define major 2
+%define libname %mklibname tomoyotools %{major}
 
-%define tomoyo_major 2
-%define tomoyo_libname %mklibname tomoyotools %{tomoyo_major}
+Summary:	TOMOYO Linux tools
+Name:		tomoyo-tools
+Version:	2.4.0
+Release:	3
+Epoch:		2
+License:	GPLv2
+URL:		http://tomoyo.sourceforge.jp/
+Group:		System/Kernel and hardware
+Source0:	http://osdn.dl.sourceforge.jp/tomoyo/27220/tomoyo-tools-%{version}-%{date}.tar.gz
+Source1:	README.tomoyo-tools.urpmi
+Source2:	tomoyo.logrotate
+Source3:	tomoyo-auditd.service
+BuildRequires:	help2man
+BuildRequires:	ncurses-devel
+BuildRequires:	readline-devel
 
-Name: 	 tomoyo-tools
-Version: %{ver}
-Release: %mkrel 2
-License: GPLv2
-URL:	 http://tomoyo.sourceforge.jp/
-Group:	 System/Kernel and hardware
-BuildRequires: help2man
-BuildRequires: ncurses-devel
-BuildRequires: readline-devel
-Epoch:   2
-Source0: http://osdn.dl.sourceforge.jp/tomoyo/27220/tomoyo-tools-%{ver}-%{date}.tar.gz
-Source1: README.tomoyo-tools.urpmi
-Source2: tomoyo.logrotate
-Source3: tomoyo-auditd.service
-
-Conflicts: ccs-tools
-Obsoletes: ccs-tools
+%rename	ccs-tools
 
 %description
 TOMOYO Linux is an extension for Linux to provide Mandatory Access Control
 (MAC) functions. This package contains the tools needed to configure,
 activate and manage the TOMOYO Linux MAC system and policies.
 
-%package -n	 %{tomoyo_libname}
+%package -n	 %{libname}
 Summary:	Shared tomoyotools library
 Group:		System/Libraries
 
-%description -n %{tomoyo_libname}
-This package provides the tomoyo shared library
+%description -n %{libname}
+This package provides the tomoyo shared library.
 
 %prep
 %setup -q -n tomoyo-tools
@@ -73,5 +70,5 @@ install -m 700 -d %{buildroot}%{_logdir}/tomoyo
 %{_unitdir}/tomoyo-auditd.service
 %doc README.install.urpmi
 
-%files -n %{tomoyo_libname}
-%{_libdir}/libtomoyotools.so.*
+%files -n %{libname}
+%{_libdir}/libtomoyotools.so.%{major}*
