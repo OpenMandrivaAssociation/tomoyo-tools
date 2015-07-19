@@ -5,7 +5,7 @@
 Summary:	TOMOYO Linux tools
 Name:		tomoyo-tools
 Version:	2.4.0
-Release:	10
+Release:	11
 Epoch:		2
 License:	GPLv2
 URL:		http://tomoyo.sourceforge.jp/
