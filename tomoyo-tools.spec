@@ -8,7 +8,7 @@ Version:	2.4.0
 Release:	14
 Epoch:		2
 License:	GPLv2
-URL:		http://tomoyo.sourceforge.jp/
+URL:		https://tomoyo.sourceforge.jp/
 Group:		System/Kernel and hardware
 Source0:	http://osdn.dl.sourceforge.jp/tomoyo/27220/tomoyo-tools-%{version}-%{date}.tar.gz
 Source1:	README.tomoyo-tools.urpmi
